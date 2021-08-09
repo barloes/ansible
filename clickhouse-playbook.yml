@@ -1,0 +1,8 @@
+---
+- import_playbook: roles/install-docker.yml
+- name: Add docker
+  hosts: all
+  become: yes
+  tasks:
+  - name: Create a nginx
+    shell: "docker run -p 80:80 nginx"

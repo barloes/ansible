@@ -1,0 +1,6 @@
+---
+- name: ping them all
+  hosts: _zoo
+  tasks:
+    - name: pinging
+      ping:
