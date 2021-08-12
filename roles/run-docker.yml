@@ -1,0 +1,7 @@
+---
+- name: run docker
+  hosts: all
+  become: yes
+  tasks:
+  - name: run docker
+    shell: "sudo amazon-linux-extras install -y docker"

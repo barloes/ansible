@@ -1,0 +1,7 @@
+<yandex>
+    <macros>
+        <replica from_env="CLICK_TWO"/>
+        <shard>01</shard>
+        <layer>02</layer>
+    </macros>
+</yandex>

@@ -1,4 +1,3 @@
-# Ansible playbook AWS - install docker (2021)
 ---
 - name: "AWS - Install docker"
   hosts: all
@@ -11,7 +10,7 @@
         update_only: yes
 
     - name: install docker
-      shell: "amazon-linux-extras install docker"
+      shell: "sudo amazon-linux-extras install -y docker"
 
     - name: Enable Docker CE service at startup
       service:

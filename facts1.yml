@@ -1,0 +1,10 @@
+---
+- name: ec2 facts
+  hosts: all
+  become: yes
+  tasks:
+    - debug:
+        var: hostvars[groups['_click'][0]]['ansible_eth0']['ipv4']['address']
+    - debug:
+        var: hostvars[groups['_click'][0]]['ansible_nodename']
+

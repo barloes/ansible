@@ -2,15 +2,16 @@
   hosts: all
   become: yes
   tasks:
+  - name: Enable Docker CE service at startup
+    service:
+      name: docker
+      state: started
+      enabled: yes
+
+  - name: list all docker
+    shell: docker ps -q
+    register: contents
   - name: kill all docker
     shell: "docker kill $(docker ps -q)"
-  - name: setup nginx docker
-    shell: "docker rm $(docker ps -a -q)"
-  - name: Copy file with owner and permissions
-    ansible.builtin.copy:
-      src: templates/clickhouse
-      dest: /etc/foo.conf
-      owner: foo
-      mode: '0644'
-  - name: setup nginx docker
-    shell: "docker run -d -p 80:80 nginx"
+    when: contents.stdout != ""
+

@@ -1,0 +1,9 @@
+---
+- name: Copy file
+  hosts: all
+  become: yes
+  tasks:
+  - debug:
+      msg: 
+        - " 'ip'  is {{ hostvars[inventory_hostname] }} "
+        - " 'ip'  is {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }} "

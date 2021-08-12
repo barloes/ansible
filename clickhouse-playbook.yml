@@ -4,5 +4,9 @@
   hosts: all
   become: yes
   tasks:
-  - name: Create a nginx
-    shell: "docker run -p 80:80 nginx"
+  - name: Create a data container
+    docker_container:
+      name: mydata
+      image: busybox
+      volumes:
+        - /data

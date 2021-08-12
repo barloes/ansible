@@ -5,6 +5,7 @@ filters:
   instance-state-name : running
 keyed_groups:
   - key: tags.name
+  - key: tags.click
 compose:
   ansible_host: public_ip_address
 

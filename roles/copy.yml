@@ -1,0 +1,12 @@
+  - name: add CH_TWO to env var
+    lineinfile:
+      dest: "/opt/slam/.clickhouse.env"
+      line: "CH_TWO={{hostvars[groups['_click'][1]]['ansible_nodename']}}"
+  - name: add ZOO to env var
+    lineinfile:
+      dest: "/opt/slam/.clickhouse.env"
+      line: "ZOO={{hostvars[groups['_zoo'][0]]['ansible_nodename']}}"
+  - name: add ZOO to env var
+    lineinfile:
+      dest: "/opt/slam/.clickhouse.env"
+      line: "ZOO={{hostvars[groups['_zoo'][1]]['ansible_nodename']}}"

@@ -9,7 +9,8 @@ RUN apt-get update
 RUN apt-get -y install \
                     wget \
                     openssh-client \
-                    libapt-pkg-dev       
+                    nano
 
 ENV AWS_PROFILE="personal"
 
+RUN alias ap="ansible-playbook"

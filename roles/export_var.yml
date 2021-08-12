@@ -1,0 +1,4 @@
+- name: add CH_ONE to env var
+  lineinfile:
+    dest: "/opt/slam/.clickhouse.env"
+    line: "CH_ONE={{hostvars[groups['all'][0]]['ansible_fqdn']}}"
