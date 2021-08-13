@@ -1,0 +1,24 @@
+---
+- name: configure all
+  hosts: all
+  become: yes  
+  tasks:
+  - name: Add zookeeper variable
+    lineinfile:
+      dest: "/opt/slam/.clickhouse.env"
+      line: "ZOO{{index}}={{dns}}"
+    with_indexed_items:
+      - "{{ groups['_zoo'] }}"
+    vars:
+      index: "{{item.0}}"
+      dns: "{{hostvars[item.1]['ansible_fqdn']}}"
+      
+  - name: Add clickhouse variable
+    lineinfile:
+      dest: "/opt/slam/.clickhouse.env"
+      line: "CLICK{{index}}={{dns}}"
+    with_indexed_items:
+      - "{{ groups['_click'] }}"
+    vars:
+      index: "{{item.0}}"
+      dns: "{{hostvars[item.1]['ansible_fqdn']}}"

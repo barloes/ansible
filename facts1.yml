@@ -1,10 +1,16 @@
 ---
 - name: ec2 facts
-  hosts: all
+  order: sorted
+  hosts: _click
   become: yes
   tasks:
-    - debug:
-        var: hostvars[groups['_click'][0]]['ansible_eth0']['ipv4']['address']
-    - debug:
-        var: hostvars[groups['_click'][0]]['ansible_nodename']
+  - name: Add zookeeper variable
+    lineinfile:
+      dest: "/opt/slam/.clickhouse.env"
+      line: "ZOO{{index}}={{dns}}"
+    with_indexed_items:
+      - "{{ groups['_zoo'] }}"
+    vars:
+      index: "{{item.0}}"
+      dns: "{{hostvars[item.1]['ansible_fqdn']}}"
 

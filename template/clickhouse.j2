@@ -10,7 +10,7 @@ ExecStart=/usr/bin/docker run \
             --rm \
             -v /opt/slam/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml \
             -v /opt/slam/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml \
-            -v /opt/slam/config/macros/macros-01.xml:/etc/clickhouse-server/config.d/macros.xml \
+            -v /opt/slam/config/macros.xml:/etc/clickhouse-server/config.d/macros.xml \
             -v /opt/slam/config/users.xml:/etc/clickhouse-server/users.xml \
             -v /opt/slam/config/table/:/docker-entrypoint-initdb.d \
             --name clickhouse \

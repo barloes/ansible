@@ -1,6 +1,6 @@
 <yandex>
     <macros>
-        <replica from_env="CLICK_ONE"/>
+        <replica from_env="CLICK0"/>
         <shard>01</shard>
         <layer>01</layer>
     </macros>

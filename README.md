@@ -98,7 +98,39 @@ docker run \
 
 
 docker run -d --env-file /opt/slam/.clickhouse.env --name some-clickhouse-server2 --ulimit nofile=262144:262144 yandex/clickhouse-server:21-alpine 
+
 docker exec -it --env-file /opt/slam/.clickhouse.env \
         yandex/clickhouse-server \
         --network=host \
         bin/bash
+
+/usr/bin/docker run \
+            -d \
+            --rm \
+            --network=host \
+            zookeeper:3.7.0 
+
+/usr/bin/docker run \
+            --env-file /opt/slam/.clickhouse.env \
+            --rm \
+            -v /opt/slam/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml \
+            -v /opt/slam/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml \
+            -v /opt/slam/config/macros.xml:/etc/clickhouse-server/config.d/macros.xml \
+            -v /opt/slam/config/users.xml:/etc/clickhouse-server/users.xml \
+            -v /opt/slam/config/table/:/docker-entrypoint-initdb.d \
+            --name clickhouse1 \
+            --ulimit nofile=262144:262144 \
+            --network=host \
+            yandex/clickhouse-server:21-alpine 
+
+  - name: Setup a ZOO_SERVERS variable
+    set_fact:
+      ZOO_SERVERS: 
+  - name: Concatenate the zookeeper dns
+    set_fact:
+      ZOO_SERVERS: "{{ZOO_SERVERS}}server.{{index}}=zoo{{index}}:{{dns}};2181 "
+    with_indexed_items:
+      - "{{ groups['_zoo'] }}"
+    vars:
+      index: "{{item.0+1}}"
+      dns: "{{hostvars[item.1]['ansible_fqdn']}}"

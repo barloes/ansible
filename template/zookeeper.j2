@@ -1,0 +1,24 @@
+[Unit]
+Description=Run zookeeper
+After=network-online.target
+Requires=network-online.target
+
+[Service]
+
+ExecStart=/usr/bin/docker run \
+            --env-file /opt/slam/.zookeeper.env \
+            --rm \
+            --network=host \
+            zookeeper:3.7.0 
+    
+ExecStop=/usr/bin/docker stop zookeeper
+
+WorkingDirectory=/opt/slam
+StandardOutput=journal+console
+User=root
+Group=root
+TimeoutSec=120
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,31 @@
+---
+- name: configure all
+  hosts: all
+  order: sorted
+  become: yes
+  tasks:
+  - name: load vars
+    include_vars:
+      file: "add_var.yml"
+    failed_when: false
+  - name: configure docker
+    include_tasks: configure_docker.yml
+  - name: configure zoo
+    include_tasks:
+      name: configure_zoo.yml
+    when: ('zoo' == hostvars[groups['_click'].0].tags.name)
+  - name: configure clickhouse
+    include_tasks:
+      name: configure_click.yml
+    when: ('click' == hostvars[groups['_click'].0].tags.name)
+  - name: export var 
+    include_tasks:
+      name: all_export_var.yml
+  - name: start zoo
+    include_tasks:
+      name: install_zoo.yml
+    when: ('zoo' == hostvars[groups['_click'].0].tags.name)
+  - name: start click
+    include_tasks:
+      name: install_click.yml
+    when: ('click' == hostvars[groups['_click'].0].tags.name)

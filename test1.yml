@@ -1,0 +1,12 @@
+---
+
+- hosts: localhost
+  gather_facts: no
+  connection: local
+  vars:
+    - first_nm: John
+    - last_nm: Smith
+    - nick_nm:
+  tasks:
+   - set_fact: full_name="{{first_nm}} {{last_nm}}"
+   - debug: var=full_name

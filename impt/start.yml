@@ -1,0 +1,11 @@
+---
+- name: start all
+  hosts: all
+  become: yes
+  tasks:
+  - name: configure zoo
+    import_role:
+      name: configure_zoo.yml
+  - name: configure clickhouse
+    import_role:
+      name: configure_click.yml

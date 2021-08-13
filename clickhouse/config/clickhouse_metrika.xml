@@ -5,11 +5,11 @@
                                 <weight>1</weight>
                                 <internal_replication>true</internal_replication>
 				<replica>
-					<host from_env="CLICK_ONE"/>
+					<host from_env="CLICK0"/>
 					<port>9000</port>
 				</replica>
 				<replica>
-					<host from_env="CLICK_TWO"/>
+					<host from_env="CLICK1"/>
 					<port>9000</port>
 				</replica>
 			</shard>
@@ -17,11 +17,11 @@
 	</clickhouse_remote_servers>
         <zookeeper-servers>
             <node index="1">
-                <host from_env="ZOO_ONE"/>
+                <host from_env="ZOO0"/>
                 <port>2181</port>
             </node>
             <node index="2">
-                <host from_env="ZOO_TWO"/>
+                <host from_env="ZOO1"/>
                 <port>2181</port>
             </node>
         </zookeeper-servers>

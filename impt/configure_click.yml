@@ -1,0 +1,55 @@
+---
+- name: initialise ec2
+  hosts: _click
+  become: yes
+  tasks:
+  - name: pull the docker image
+    docker_image:
+      name: "yandex/clickhouse-server:21-alpine"
+      source: pull
+      force_source: yes
+    retries: 8
+    ignore_errors: yes
+
+  - name: create folders
+    file:
+      path: "{{ item }}"
+      owner: root
+      group: root
+      mode: "0755"
+      state: directory
+    with_items:
+      - /opt/slam
+    
+  - name: generate clickhouse env file
+    copy:
+      src: "../template/clickhouse.env.j2"
+      dest: "/opt/slam/.clickhouse.env"
+      owner: root
+      group: root
+      mode: "0600"
+
+  - name: create systemd services
+    copy:
+      src: "../template/clickhouse.j2"
+      dest: "/etc/systemd/system/clickhouse.service"
+      owner: root
+      group: root
+      mode: "0644"
+
+  - name: Copy clickhouse config to ec2
+    copy:
+      src: ../clickhouse/
+      dest: /opt/slam
+      owner: root
+      mode: "0644"
+      
+  - name: Copy clickhouse config to ec2
+    copy:
+      src: ../clickhouse/macros/macros{{groups['_click'].index(inventory_hostname)}}.xml
+      dest: /opt/slam/macros.xml
+      follow: no
+      owner: root
+      mode: "0644"
+
+

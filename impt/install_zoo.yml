@@ -1,0 +1,12 @@
+---
+- name: start zoo
+  hosts: _zoo
+  order: sorted
+  become: yes
+  tasks:
+  - name: make sure services are enabled and started
+    systemd:
+      name: "clickhouse"
+      daemon-reload: yes
+      enabled: yes
+      state: started
