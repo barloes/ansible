@@ -1,72 +1,68 @@
----
-- name: initialise ec2
-  hosts: _zoo
-  order: sorted
-  become: yes
-  tasks:
-  - name: pull the docker image
-    docker_image:
-      name: "zookeeper:3.7.0"
-      source: pull
-      force_source: yes
-    retries: 8
-    ignore_errors: yes
 
-  # can be reduced stuff
-  - name: create folders
-    file:
-      path: "{{ item }}"
-      owner: root
-      group: root
-      mode: "0755"
-      state: directory
-    with_items:
-      - /opt/slam
-    
-  - name: generate zookeeper env file
-    copy:
-      src: "../template/zookeeper.env.j2"
-      dest: "/opt/slam/.zookeeper.env"
-      owner: root
-      group: root
-      mode: "0600"
+- name: pull the docker image
+  docker_image:
+    name: "zookeeper:3.7.0"
+    source: pull
+    force_source: yes
+  retries: 8
+  ignore_errors: yes
 
-  - name: create systemd services
-    copy:
-      src: "../template/zookeeper.j2"
-      dest: "/etc/systemd/system/zookeeper.service"
-      owner: root
-      group: root
-      mode: "0644"
+# can be reduced stuff
+- name: create folders
+  file:
+    path: "{{ item }}"
+    owner: root
+    group: root
+    mode: "0755"
+    state: directory
+  with_items:
+    - /opt/slam
+  
+- name: generate zookeeper env file
+  copy:
+    src: "../template/zookeeper.env.j2"
+    dest: "/opt/slam/.zookeeper.env"
+    owner: root
+    group: root
+    mode: "0600"
 
-  - name: make sure services are enabled and started
-    systemd:
-      name: "zookeeper"
-      daemon-reload: yes
-      enabled: yes
-      state: started
+- name: create systemd services
+  copy:
+    src: "../template/zookeeper.j2"
+    dest: "/etc/systemd/system/zookeeper.service"
+    owner: root
+    group: root
+    mode: "0644"
 
-  # Figure out ZOO Var
-  - name: Setup a ZOO_SERVERS variable
-    set_fact:
-      ZOO_SERVERS: 
-  - name: Concatenate the zookeeper dns
-    set_fact:
-      ZOO_SERVERS: "{{ZOO_SERVERS}}server.{{index}}=zoo{{index}}:{{dns}};2181 "
-    with_indexed_items:
-      - "{{ groups['_zoo'] }}"
-    vars:
-      index: "{{item.0+1}}"
-      dns: "{{hostvars[item.1]['ansible_fqdn']}}"
-  - debug:
-      msg: "{{ZOO_SERVERS}}"
-  # Insert ZOO Var
-  - name: add ZOO_MY_ID to env var
-    lineinfile:
-      dest: "/opt/slam/.zookeeper.env"
-      line: "ZOO_MY_ID={{groups['_zoo'].index(inventory_hostname)+1}}"
-  - name: add ZOO_SERVER to env var
-    lineinfile:
-      dest: "/opt/slam/.zookeeper.env"
-      line: "ZOO_SERVERS={{ZOO_SERVERS}}"
+- name: make sure services are enabled and started
+  systemd:
+    name: "zookeeper"
+    daemon-reload: yes
+    enabled: yes
+    state: started
+
+# Figure out ZOO Var
+- name: Setup a ZOO_SERVERS variable
+  set_fact:
+    ZOO_SERVERS: 
+- name: Concatenate the zookeeper private ip
+  set_fact:
+    ZOO_SERVERS: "{{ZOO_SERVERS}}{% if host_index != index %}server.{{index}}={{ip}}{% else %}server.{{index}}=0.0.0.0{% endif %}:2888:3888;2181 "
+  with_indexed_items:
+    - "{{ groups['_zoo'] }}"
+  vars:
+    index: "{{item.0+1}}"
+    ip: "{{hostvars[item.1].ansible_default_ipv4.address}}"
+    host_index: "{{groups['_zoo'].index(inventory_hostname)+1}}"
+- debug:
+    msg: "{{ZOO_SERVERS}}"
+# Insert ZOO Var
+- name: add ZOO_SERVER_ID to env var
+  lineinfile:
+    dest: "/opt/slam/.zookeeper.env"
+    line: "ZOO_MY_ID={{groups['_zoo'].index(inventory_hostname)+1}}"
+- name: add ZOO_SERVER to env var
+  lineinfile:
+    dest: "/opt/slam/.zookeeper.env"
+    line: "ZOO_SERVERS={{ZOO_SERVERS}}"
 

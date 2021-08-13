@@ -8,6 +8,7 @@ Requires=network-online.target
 ExecStart=/usr/bin/docker run \
             --env-file /opt/slam/.zookeeper.env \
             --rm \
+            --name zookeeper \
             --network=host \
             zookeeper:3.7.0 
     

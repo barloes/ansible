@@ -1,12 +1,12 @@
----
-- name: start click
-  hosts: _click
-  order: sorted
-  become: yes
-  tasks:
-  - name: make sure services are enabled and started
-    systemd:
-      name: "zookeeper"
-      daemon-reload: yes
-      enabled: yes
-      state: started
+
+- name: make sure clickhouse is enabled and started
+  systemd:
+    name: "clickhouse"
+    state: stopped
+
+- name: make sure clickhouse is enabled and started
+  systemd:
+    name: "clickhouse"
+    daemon-reload: yes
+    enabled: yes
+    state: started

@@ -1,16 +1,11 @@
 ---
 - name: ec2 facts
   order: sorted
-  hosts: _click
+  hosts: _zoo
   become: yes
   tasks:
-  - name: Add zookeeper variable
-    lineinfile:
-      dest: "/opt/slam/.clickhouse.env"
-      line: "ZOO{{index}}={{dns}}"
-    with_indexed_items:
-      - "{{ groups['_zoo'] }}"
-    vars:
-      index: "{{item.0}}"
-      dns: "{{hostvars[item.1]['ansible_fqdn']}}"
 
+  - debug: var=hostvars[inventory_hostname].ansible_default_ipv4.address
+
+  - debug:
+      msg: "{% if groups['_zoo'].index(inventory_hostname) == 1 %} LTE status on '{{ inventory_hostname }}' is good to go!{% else %} LTE status on '{{inventory_hostname}}' is not operational!{% endif %}"

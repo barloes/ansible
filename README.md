@@ -111,11 +111,12 @@ docker exec -it --env-file /opt/slam/.clickhouse.env \
             zookeeper:3.7.0 
 
 /usr/bin/docker run \
+            -d \
             --env-file /opt/slam/.clickhouse.env \
             --rm \
             -v /opt/slam/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml \
             -v /opt/slam/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml \
-            -v /opt/slam/config/macros.xml:/etc/clickhouse-server/config.d/macros.xml \
+            -v /opt/slam/macros.xml:/etc/clickhouse-server/config.d/macros.xml \
             -v /opt/slam/config/users.xml:/etc/clickhouse-server/users.xml \
             -v /opt/slam/config/table/:/docker-entrypoint-initdb.d \
             --name clickhouse1 \
@@ -134,3 +135,21 @@ docker exec -it --env-file /opt/slam/.clickhouse.env \
     vars:
       index: "{{item.0+1}}"
       dns: "{{hostvars[item.1]['ansible_fqdn']}}"
+
+  docker run  -it --env-file /opt/slam/.clickhouse.env --rm --entrypoint /bin/bash yandex/clickhouse-server:21-alpine
+
+  docker run  -it --env-file /opt/slam/.zookeeper.env --rm --network=host --entrypoint /bin/bash zookeeper:3.7.0
+
+
+  /usr/bin/docker run \
+            --env-file /opt/slam/.clickhouse.env \
+            --rm \
+            -v /opt/slam/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml \
+            -v /opt/slam/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml \
+            -v /opt/slam/macros.xml:/etc/clickhouse-server/config.d/macros.xml \
+            -v /opt/slam/config/users.xml:/etc/clickhouse-server/users.xml \
+            -v /opt/slam/config/table/:/docker-entrypoint-initdb.d \
+            --name clickhouse \
+            --ulimit nofile=262144:262144 \
+            --network=host \
+            yandex/clickhouse-server:21-alpine 

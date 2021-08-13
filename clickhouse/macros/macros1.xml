@@ -2,6 +2,6 @@
     <macros>
         <replica from_env="CLICK1"/>
         <shard>01</shard>
-        <layer>02</layer>
+        <layer>01</layer>
     </macros>
 </yandex>
