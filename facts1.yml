@@ -1,11 +1,9 @@
 ---
 - name: ec2 facts
   order: sorted
-  hosts: _zoo
+  hosts: all
   become: yes
   tasks:
 
-  - debug: var=hostvars[inventory_hostname].ansible_default_ipv4.address
-
-  - debug:
-      msg: "{% if groups['_zoo'].index(inventory_hostname) == 1 %} LTE status on '{{ inventory_hostname }}' is good to go!{% else %} LTE status on '{{inventory_hostname}}' is not operational!{% endif %}"
+  - name : aaa
+    include: facts.yml

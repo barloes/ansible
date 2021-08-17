@@ -1,9 +1,6 @@
 
-
-- name: make sure clickhouse is enabled and started
-  systemd:
-    name: "zookeeper"
-    state: stopped
+- name: spawn new zookeeper
+  shell: docker container stop zookeeper
 
 - name: make sure services are enabled and started
   systemd:

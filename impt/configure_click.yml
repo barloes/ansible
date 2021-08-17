@@ -69,3 +69,10 @@
   vars:
     index: "{{item.0}}"
     dns: "{{hostvars[item.1]['ansible_fqdn']}}"
+
+- name: Add hostname
+  lineinfile:
+    dest: "/opt/slam/.clickhouse.env"
+    line: "HOSTNAME={{dns}}"
+  vars:
+    dns: "{{hostvars[inventory_hostname]['ansible_fqdn']}}"
