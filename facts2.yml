@@ -1,8 +1,0 @@
----
-- name: Copy file
-  hosts: _click
-  become: yes
-  tasks:
-  - name: Include a play after another play
-    include_role: 
-      name: facts1.yaml

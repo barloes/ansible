@@ -1,6 +1,6 @@
 ---
 - name: ping them all
-  hosts: _zoo
+  hosts: all
   tasks:
     - name: run zookeeper
       shell: 
