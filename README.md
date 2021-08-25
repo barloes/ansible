@@ -5,48 +5,6 @@
 docker build -t aa .
 docker run -v ~/:/root/ -v "$(pwd)":/app -P --rm -it aa /bin/bash 
 ```
-# Run docker image
-
-
-sudo docker run \
-    -v /$(pwd)/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml \
-    -v /$(pwd)/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml \
-    -v /$(pwd)/config/macros/macros-01.xml:/etc/clickhouse-server/config.d/macros.xml \
-    -v /$(pwd)/config/users.xml:/etc/clickhouse-server/users.xml \
-    -v /$(pwd)/config/table/:/docker-entrypoint-initdb.d \
-    --ulimit nofile=262144:262144 \
-    -p 8123:8123 \
-    -p 9000:9000 \
-    yandex/clickhouse-server:21-alpine
-
-
-sudo docker run \
-    -v /$(pwd)/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml \
-    -v /$(pwd)/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml \
-    -v /$(pwd)/config/macros/macros-01.xml:/etc/clickhouse-server/config.d/macros.xml \
-    -v /$(pwd)/config/users.xml:/etc/clickhouse-server/users.xml \
-    -v /$(pwd)/config/table/:/docker-entrypoint-initdb.d \
-    --ulimit nofile=262144:262144 \
-    --network=host \
-    yandex/clickhouse-server:21-alpine 
-
-sudo docker run \
-    -v /$(pwd)/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml \
-    -v /$(pwd)/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml \
-    -v /$(pwd)/config/macros/macros-02.xml:/etc/clickhouse-server/config.d/macros.xml \
-    -v /$(pwd)/config/users.xml:/etc/clickhouse-server/users.xml \
-    -v /$(pwd)/config/table/:/docker-entrypoint-initdb.d \
-    --ulimit nofile=262144:262144 \
-    --network=host \
-    yandex/clickhouse-server:21-alpine 
-
-insert into ttt values(1)
-
-sudo docker run -d \
-    -p 2181:2181 \
-    -e JVMFLAGS="$JVMFLAGS -Djute.maxbuffer=500000000" \
-    zookeeper
-
 # Explaination
 ```
 ENV AWS_PROFILE="personal" 
@@ -60,6 +18,7 @@ ansible-playbook zoo-playbook.yml
 ansible-playbook copy.yml 
 ```
 
+# Useful commands
 ansible-inventory -i inventory_aws_ec2.yml --list
 ansible-inventory -i inventory_aws_ec2.yml --graph
 
@@ -67,89 +26,3 @@ ansible-inventory -i inventory_aws_ec2.yml --graph
 # Useful links
 - https://clarusway.com/ansible-working-with-dynamic-inventory-using-aws-ec2-plugin/
 
-
-ansible-playbook roles/clickhouse_one.yml
-ansible-playbook roles/setup-docker.yml
-ansible-playbook roles/install_clickhouse.yml
-
-docker run --rm \
-    -v /opt/slam/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml \
-    -v /opt/slam/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml \
-    -v /opt/slam/config/macros/macros-01.xml:/etc/clickhouse-server/config.d/macros.xml \
-    -v /opt/slam/config/users.xml:/etc/clickhouse-server/users.xml \
-    -v /opt/slam/config/table/:/docker-entrypoint-initdb.d \
-    --name clickhouse1 \
-    --ulimit nofile=262144:262144 \
-    --network=host \
-    yandex/clickhouse-server:21-alpine 
-
-docker run \
-    --env-file /opt/slam/.clickhouse.env \
-    --rm \
-    -v /opt/slam/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml \
-    -v /opt/slam/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml \
-    -v /opt/slam/config/macros/macros-01.xml:/etc/clickhouse-server/config.d/macros.xml \
-    -v /opt/slam/config/users.xml:/etc/clickhouse-server/users.xml \
-    -v /opt/slam/config/table/:/docker-entrypoint-initdb.d \
-    --name clickhouse1 \
-    --ulimit nofile=262144:262144 \
-    --network=host \
-    yandex/clickhouse-server:21-alpine 
-
-
-docker run -d --env-file /opt/slam/.clickhouse.env --name some-clickhouse-server2 --ulimit nofile=262144:262144 yandex/clickhouse-server:21-alpine 
-
-docker exec -it --env-file /opt/slam/.clickhouse.env \
-        yandex/clickhouse-server \
-        --network=host \
-        bin/bash
-
-/usr/bin/docker run \
-            -d \
-            --rm \
-            --network=host \
-            zookeeper:3.7.0 
-
-/usr/bin/docker run \
-            -d \
-            --env-file /opt/slam/.clickhouse.env \
-            --rm \
-            -v /opt/slam/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml \
-            -v /opt/slam/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml \
-            -v /opt/slam/macros.xml:/etc/clickhouse-server/config.d/macros.xml \
-            -v /opt/slam/config/users.xml:/etc/clickhouse-server/users.xml \
-            -v /opt/slam/config/table/:/docker-entrypoint-initdb.d \
-            --name clickhouse1 \
-            --ulimit nofile=262144:262144 \
-            --network=host \
-            yandex/clickhouse-server:21-alpine 
-
-  - name: Setup a ZOO_SERVERS variable
-    set_fact:
-      ZOO_SERVERS: 
-  - name: Concatenate the zookeeper dns
-    set_fact:
-      ZOO_SERVERS: "{{ZOO_SERVERS}}server.{{index}}=zoo{{index}}:{{dns}};2181 "
-    with_indexed_items:
-      - "{{ groups['_zoo'] }}"
-    vars:
-      index: "{{item.0+1}}"
-      dns: "{{hostvars[item.1]['ansible_fqdn']}}"
-
-  docker run  -it --env-file /opt/slam/.clickhouse.env --rm --entrypoint /bin/bash yandex/clickhouse-server:21-alpine
-
-  docker run  -it --env-file /opt/slam/.zookeeper.env --rm --network=host --entrypoint /bin/bash zookeeper:3.7.0
-
-
-  /usr/bin/docker run \
-            --env-file /opt/slam/.clickhouse.env \
-            --rm \
-            -v /opt/slam/config/clickhouse_config.xml:/etc/clickhouse-server/config.xml \
-            -v /opt/slam/config/clickhouse_metrika.xml:/etc/clickhouse-server/metrika.xml \
-            -v /opt/slam/macros.xml:/etc/clickhouse-server/config.d/macros.xml \
-            -v /opt/slam/config/users.xml:/etc/clickhouse-server/users.xml \
-            -v /opt/slam/config/table/:/docker-entrypoint-initdb.d \
-            --name clickhouse \
-            --ulimit nofile=262144:262144 \
-            --network=host \
-            yandex/clickhouse-server:21-alpine 

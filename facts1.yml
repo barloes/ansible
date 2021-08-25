@@ -4,6 +4,13 @@
   hosts: all
   become: yes
   tasks:
-
-  - name : aaa
-    include: facts.yml
+  - set_fact: CLICK0=c
+  - set_fact: CLICK1=a
+  - set_fact: CLICK2=b
+  - name: generate clickhouse env file
+    template:
+      src: "eg.j2"
+      dest: "/home/ubuntu"
+      owner: root
+      group: root
+      mode: "0600"

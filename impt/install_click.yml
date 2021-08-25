@@ -2,11 +2,6 @@
 - name: make sure clickhouse is enabled and started
   systemd:
     name: "clickhouse"
-    state: stopped
-
-- name: make sure clickhouse is enabled and started
-  systemd:
-    name: "clickhouse"
     daemon-reload: yes
     enabled: yes
     state: started

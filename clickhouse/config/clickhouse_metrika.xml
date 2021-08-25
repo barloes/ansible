@@ -12,6 +12,10 @@
 					<host from_env="CLICK1"/>
 					<port>9000</port>
 				</replica>
+                <replica>
+					<host from_env="CLICK2"/>
+					<port>9000</port>
+				</replica>
 			</shard>
 		</cluster_1>
 	</clickhouse_remote_servers>
@@ -22,6 +26,10 @@
             </node>
             <node index="2">
                 <host from_env="ZOO1"/>
+                <port>2181</port>
+            </node>
+            <node index="3">
+                <host from_env="ZOO2"/>
                 <port>2181</port>
             </node>
         </zookeeper-servers>
