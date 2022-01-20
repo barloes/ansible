@@ -11,6 +11,4 @@ RUN apt-get -y install \
                     openssh-client \
                     nano
 
-ENV AWS_PROFILE="personal"
-
-RUN alias ap="ansible-playbook"
+ENV AWS_PROFILE="default"

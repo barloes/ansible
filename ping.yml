@@ -1,6 +1,6 @@
 ---
 - name: ping them all
-  hosts: all
+  hosts: _kuber:&_worker
   tasks:
-    - name: run zookeeper
-      shell: 
+    - name: pinging
+      ping:

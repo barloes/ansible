@@ -1,0 +1,1 @@
+RUN alias ap="ansible-playbook"

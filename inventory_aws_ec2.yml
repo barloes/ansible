@@ -4,8 +4,8 @@ regions:
 filters:
   instance-state-name : running
 keyed_groups:
-  - key: tags.name
-  - key: tags.click
+  - key: tags.Name
+  - key: tags.Node
 compose:
   ansible_host: public_ip_address
 
